@@ -332,7 +332,7 @@
   }
 
   function captureScroll(job) {
-    if (job.mode !== 'compact' || !job.scroller?.isConnected) return null;
+    if ((job.mode !== 'compact' && foldedCount === 0) || !job.scroller?.isConnected) return null;
     const scroller = job.scroller;
     const bottomDistance = Math.max(0, scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight);
     const anchor = chooseVisibleAnchor(scroller, job.turns);
@@ -591,6 +591,7 @@
     render();
   }
   function changeSetting(name, value) {
+    const restoreSnapshot = name === 'enabled' && !value && foldedCount ? captureCurrentScroll() : null;
     if (name === 'keepRecent') value = clamp(value, 10, 200, DEFAULTS.keepRecent);
     if (name === 'minimumTurns') value = clamp(value, 20, 500, DEFAULTS.minimumTurns);
     if (name === 'mode') value = value === 'compact' ? 'compact' : 'safe';
@@ -598,6 +599,7 @@
     extraRecent = 0;
     showAllUntilRouteChange = false;
     save();
+    if (restoreSnapshot) requestAnimationFrame(() => restoreScroll(restoreSnapshot));
     if (!settings.enabled || !settings.largeBlocks) {
       if (!settings.enabled) cleanupMarks();
       else { for (const node of largeManaged) node.classList.remove(`${TAG}-block`); largeManaged.clear(); }
