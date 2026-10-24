@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         ChatGPT Long Chat Smoother (Best-of, Safe First)
 // @namespace    local.chatgpt.long-chat-smoother
-// @version      1.0.0
-// @description  Safer long-chat rendering hints; optional reversible compact mode for legacy ChatGPT conversations.
+// @version      1.1.0
+// @description  Budgeted safe long-chat rendering hints, optional compact mode, large-block hints, and live diagnostics.
 // @author       Community best-of implementation
 // @license      MIT
 // @match        https://chatgpt.com/*
@@ -36,6 +36,7 @@
     keepRecent: 30,
     minimumTurns: 50,
     reduceMotion: false,
+    largeBlocks: true,
     panelOpen: false
   });
   const clamp = (v, min, max, fallback) => {
@@ -52,6 +53,7 @@
         keepRecent: clamp(parsed.keepRecent, 10, 200, DEFAULTS.keepRecent),
         minimumTurns: clamp(parsed.minimumTurns, 20, 500, DEFAULTS.minimumTurns),
         reduceMotion: Boolean(parsed.reduceMotion),
+        largeBlocks: typeof parsed.largeBlocks === 'boolean' ? parsed.largeBlocks : DEFAULTS.largeBlocks,
         panelOpen: Boolean(parsed.panelOpen)
       };
     } catch {
@@ -70,7 +72,22 @@
   let rootObserver = null;
   let scanTimer = 0;
   let idleTask = 0;
-  let scanning = false;
+  let scanJob = null;
+  let jobSerial = 0;
+  let userScrollEpoch = 0;
+  let suppressScrollUntil = 0;
+  let blockedByVisibility = false;
+  const CHUNK_BUDGET_MS = 6;
+  const CHUNK_MAX_OPERATIONS = 24;
+  const BLOCK_MIN_CHARS = { PRE: 1300, TABLE: 1700, P: 1700, BLOCKQUOTE: 2000 };
+  const largeManaged = new Set();
+  const perf = {
+    scans: 0, lastTotalMs: 0, meanTotalMs: 0, maxTotalMs: 0,
+    lastWorkMs: 0, lastChunkMs: 0, maxChunkMs: 0, overBudget: 0,
+    lastNodes: 0, lastBlocks: 0, frameGapMs: null,
+    longTasks: 0, longTaskMs: 0, supportedLongTasks: false
+  };
+  let longTaskObserver = null;
   let lastScroll = -Infinity;
   let lastTyping = -Infinity;
   let wasStreaming = false;
@@ -96,6 +113,10 @@
       .${TAG}-auto {
         content-visibility: auto !important;
         contain-intrinsic-size: auto 420px !important;
+      }
+      .${TAG}-block {
+        content-visibility: auto !important;
+        contain-intrinsic-size: auto 360px !important;
       }
       .${TAG}-folded {
         box-sizing: border-box !important;
@@ -124,7 +145,7 @@
         transition-duration: .001ms !important;
       }
       @media print {
-        .${TAG}-auto { content-visibility: visible !important; contain-intrinsic-size: none !important; }
+        .${TAG}-auto, .${TAG}-block { content-visibility: visible !important; contain-intrinsic-size: none !important; }
         .${TAG}-folded { max-height: none !important; overflow: visible !important; }
         .${TAG}-folded > * { display: revert !important; }
         .${TAG}-folded::before { display: none !important; }
@@ -134,6 +155,8 @@
   }
 
   function cleanupMarks() {
+    for (const node of largeManaged) node.classList.remove(`${TAG}-block`);
+    largeManaged.clear();
     for (const node of managed) {
       node.classList.remove(`${TAG}-auto`, `${TAG}-folded`);
       node.removeAttribute('data-cgpt-smoother-label');
@@ -144,6 +167,7 @@
   }
 
   function resetOnRouteChange(nextRoute) {
+    cancelJob();
     cleanupMarks();
     route = nextRoute;
     extraRecent = 0;
@@ -225,20 +249,54 @@
     rootObserver.observe(currentRoot, { childList: true, subtree: true });
   }
 
-  function queueScan(delay = 400) {
-    clearTimeout(scanTimer);
-    if (idleTask && typeof window.cancelIdleCallback === 'function') {
-      window.cancelIdleCallback(idleTask);
-      idleTask = 0;
+  function cancelJob() {
+    jobSerial++;
+    scanJob = null;
+    if (idleTask) {
+      if (typeof window.cancelIdleCallback === 'function') window.cancelIdleCallback(idleTask);
+      else clearTimeout(idleTask);
     }
+    idleTask = 0;
+  }
+
+  function queueScan(delay = 400) {
+    if (document.hidden) {
+      blockedByVisibility = true;
+      return;
+    }
+    cancelJob();
+    clearTimeout(scanTimer);
     scanTimer = setTimeout(() => {
       scanTimer = 0;
-      if ('requestIdleCallback' in window) {
-        idleTask = window.requestIdleCallback(() => { idleTask = 0; scan(); }, { timeout: 1200 });
-      } else {
-        scan();
-      }
+      scheduleWork(scan);
     }, delay);
+  }
+
+  function scheduleWork(fn) {
+    if (document.hidden) return;
+    if (typeof window.requestIdleCallback === 'function') {
+      idleTask = window.requestIdleCallback(deadline => {
+        idleTask = 0;
+        if (!document.hidden) fn(deadline);
+      }, { timeout: 250 });
+    } else {
+      idleTask = setTimeout(() => {
+        idleTask = 0;
+        if (!document.hidden) fn({ timeRemaining: () => CHUNK_BUDGET_MS });
+      }, 0);
+    }
+  }
+
+  function suspendBackground() {
+    blockedByVisibility = true;
+    clearTimeout(scanTimer);
+    scanTimer = 0;
+    cancelJob();
+    stopLongTaskObserver();
+    rootObserver?.disconnect();
+    rootObserver = null;
+    currentRoot = null;
+    lastState = 'Suspended in background tab';
   }
 
   function mark(node, mode, label) {
@@ -260,9 +318,200 @@
     else managed.delete(node);
   }
 
+  function chooseVisibleAnchor(scroller, turns) {
+    if (typeof document.elementFromPoint !== 'function') return null;
+    const r = scroller === document.scrollingElement || scroller === document.documentElement
+      ? { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight }
+      : scroller.getBoundingClientRect();
+    const x = Math.max(5, Math.min(window.innerWidth - 5, r.left + r.width / 2));
+    const y = Math.max(5, Math.min(window.innerHeight - 5, r.top + Math.min(r.height / 3, 125)));
+    let node = document.elementFromPoint(x, y);
+    const turnSet = new Set(turns);
+    while (node && !turnSet.has(node)) node = node.parentElement;
+    return node;
+  }
+
+  function captureScroll(job) {
+    if (job.mode !== 'compact' || !job.scroller?.isConnected) return null;
+    const scroller = job.scroller;
+    const bottomDistance = Math.max(0, scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight);
+    const anchor = chooseVisibleAnchor(scroller, job.turns);
+    return {
+      scroller, bottomDistance,
+      anchor, top: anchor?.getBoundingClientRect().top,
+      epoch: userScrollEpoch,
+      route: job.route,
+      stickBottom: bottomDistance < 180
+    };
+  }
+
+  function restoreScroll(snapshot) {
+    if (!snapshot || snapshot.epoch !== userScrollEpoch ||
+        snapshot.route !== location.pathname + location.search ||
+        !snapshot.scroller?.isConnected || document.hidden || isStreaming()) return;
+    const { scroller } = snapshot;
+    suppressScrollUntil = performance.now() + 90;
+    if (snapshot.stickBottom) {
+      scroller.scrollTop = Math.max(0, scroller.scrollHeight - scroller.clientHeight - snapshot.bottomDistance);
+    } else if (snapshot.anchor?.isConnected && Number.isFinite(snapshot.top)) {
+      scroller.scrollTop += snapshot.anchor.getBoundingClientRect().top - snapshot.top;
+    }
+  }
+
+  function shouldPause() {
+    return document.hidden || isStreaming() ||
+      (performance.now() - lastScroll < 300) ||
+      (performance.now() - lastTyping < 350);
+  }
+
+  function isBlockCandidate(node) {
+    if (!(node instanceof Element) || !node.isConnected || protectedTurn(node)) return false;
+    const limit = BLOCK_MIN_CHARS[node.tagName];
+    // Text length is an inexpensive early filter compared with scrollHeight/forced layout.
+    // Do not read or store the text content; only measure its length.
+    return Boolean(limit && node.textContent?.length >= limit);
+  }
+
+  function updateBlocksForTurn(turn, job) {
+    if (!settings.largeBlocks || !supportsCV || job.layout === 'native') return;
+    // Never touch the newest two turns, active selection, or editable UI.
+    if (job.index >= job.turns.length - 2 || protectedTurn(turn)) return;
+    if (job.blockQueue.length >= 800) return;
+    const blocks = turn.querySelectorAll('pre, table, .markdown p, .prose p, .markdown blockquote, .prose blockquote');
+    for (const node of blocks) {
+      if (job.blockQueue.length >= 800) break;
+      // Avoid nested marking of a paragraph within a marked table/pre.
+      if (node.closest('pre, table') && !node.matches('pre, table')) continue;
+      job.blockQueue.push(node);
+    }
+  }
+
+  function updateLongTaskObserver() {
+    if (!settings.panelOpen || document.hidden || !settings.enabled) {
+      stopLongTaskObserver();
+      return;
+    }
+    if (longTaskObserver || typeof PerformanceObserver !== 'function') return;
+    if (!PerformanceObserver.supportedEntryTypes?.includes('longtask')) return;
+    try {
+      longTaskObserver = new PerformanceObserver(list => {
+        for (const entry of list.getEntries()) {
+          perf.longTasks++;
+          perf.longTaskMs += entry.duration;
+        }
+        render();
+      });
+      longTaskObserver.observe({ type: 'longtask', buffered: false });
+      perf.supportedLongTasks = true;
+    } catch { stopLongTaskObserver(); }
+  }
+  function stopLongTaskObserver() {
+    longTaskObserver?.disconnect();
+    longTaskObserver = null;
+  }
+
+  function finishJob(job) {
+    if (scanJob !== job || document.hidden) return;
+    scanJob = null;
+    for (const node of [...managed]) {
+      if (!node.isConnected || !job.turnSet.has(node)) mark(node, 'none');
+    }
+    for (const node of [...largeManaged]) {
+      if (!node.isConnected || !job.blockSeen.has(node)) {
+        node.classList.remove(`${TAG}-block`);
+        largeManaged.delete(node);
+      }
+    }
+    foldedCount = job.folded;
+    perf.scans++;
+    perf.lastTotalMs = Math.round((performance.now() - job.started) * 10) / 10;
+    perf.meanTotalMs += (perf.lastTotalMs - perf.meanTotalMs) / perf.scans;
+    perf.maxTotalMs = Math.max(perf.maxTotalMs, perf.lastTotalMs);
+    perf.lastWorkMs = Math.round(job.workMs * 10) / 10;
+    perf.lastNodes = job.turns.length;
+    perf.lastBlocks = largeManaged.size;
+    lastScanMs = perf.lastTotalMs;
+    lastState = job.mode === 'compact' ? `Compact: ${job.folded} older turns folded` :
+      supportsCV ? `Safe: ${job.cutoff} older turns optimized` : 'content-visibility unsupported';
+    render();
+    // A sampled two-frame interval reflects responsiveness, not exact paint latency.
+    if (settings.panelOpen && typeof requestAnimationFrame === 'function') {
+      const ticket = jobSerial;
+      requestAnimationFrame(t1 => requestAnimationFrame(t2 => {
+        if (ticket === jobSerial && !document.hidden) {
+          perf.frameGapMs = Math.round((t2 - t1) * 10) / 10;
+          render();
+        }
+      }));
+    }
+  }
+
+  function runChunkInternal(job) {
+    if (scanJob !== job || document.hidden) return;
+    if (job.route !== location.pathname + location.search) { queueScan(0); return; }
+    if (shouldPause()) {
+      lastState = 'Paused during interaction or generation';
+      queueScan(600);
+      return;
+    }
+    const snapshot = captureScroll(job);
+    const begin = performance.now();
+    let operations = 0;
+    while (operations < CHUNK_MAX_OPERATIONS && performance.now() - begin < CHUNK_BUDGET_MS) {
+      if (job.index < job.turns.length) {
+        const i = job.index++;
+        const node = job.turns[i];
+        const keepVisible = i >= job.cutoff || protectedTurn(node) || independentlyOpened.has(node);
+        const desired = keepVisible ? 'none' :
+          (job.mode === 'compact' ? 'fold' : (supportsCV ? 'auto' : 'none'));
+        const already = desired === 'fold' ? node.classList.contains(`${TAG}-folded`) :
+          desired === 'auto' ? node.classList.contains(`${TAG}-auto`) :
+          (!node.classList.contains(`${TAG}-auto`) && !node.classList.contains(`${TAG}-folded`));
+        if (!already) mark(node, desired, `Older turn ${i + 1} — click to expand`);
+        if (desired === 'fold') job.folded++;
+        if (desired !== 'fold') updateBlocksForTurn(node, job);
+      } else if (job.blockIndex < job.blockQueue.length) {
+        const node = job.blockQueue[job.blockIndex++];
+        if (!node.isConnected || !job.root.contains(node)) continue;
+        if (isBlockCandidate(node)) {
+          job.blockSeen.add(node);
+          if (!node.classList.contains(`${TAG}-block`)) node.classList.add(`${TAG}-block`);
+          largeManaged.add(node);
+        }
+      } else break;
+      operations++;
+    }
+    const chunkMs = performance.now() - begin;
+    job.workMs += chunkMs;
+    perf.lastChunkMs = Math.round(chunkMs * 10) / 10;
+    perf.maxChunkMs = Math.max(perf.maxChunkMs, chunkMs);
+    if (chunkMs > CHUNK_BUDGET_MS + 2) perf.overBudget++;
+    const more = job.index < job.turns.length || job.blockIndex < job.blockQueue.length;
+    if (snapshot) {
+      requestAnimationFrame(() => {
+        if (scanJob !== job || document.hidden) return;
+        restoreScroll(snapshot);
+        if (more) scheduleWork(() => runChunk(job));
+        else finishJob(job);
+      });
+    } else if (more) scheduleWork(() => runChunk(job));
+    else finishJob(job);
+  }
+
+  function runChunk(job) {
+    try { runChunkInternal(job); }
+    catch (error) {
+      cancelJob();
+      cleanupMarks();
+      lastState = `Safety fallback (${error?.message || 'DOM changed'})`;
+      console.warn('[ChatGPT Smoother] Work interrupted; original page restored', error);
+      render();
+    }
+  }
+
   function scan() {
-    if (scanning) return;
-    scanning = true;
+    if (document.hidden) { blockedByVisibility = true; return; }
+    cancelJob();
     const t0 = performance.now();
     try {
       const nextRoute = location.pathname + location.search;
@@ -272,88 +521,59 @@
       currentLayout = layout;
       latestCount = turns.length;
       if (!settings.enabled) {
-        cleanupMarks();
-        lastState = 'Disabled — original ChatGPT view';
-        return;
+        cleanupMarks(); lastState = 'Disabled — original ChatGPT view'; return;
       }
       if (!turns.length) {
-        cleanupMarks();
-        lastState = 'Waiting for a conversation';
-        return;
+        cleanupMarks(); lastState = 'Waiting for a conversation'; return;
       }
       if (layout === 'native') {
-        cleanupMarks();
-        lastState = 'Native ChatGPT virtualization detected — left untouched';
+        cleanupMarks(); lastState = 'Native ChatGPT virtualization detected — left untouched'; return;
+      }
+      if (shouldPause()) {
+        lastState = isStreaming() ? 'Paused while ChatGPT is generating' : 'Paused during interaction';
+        if (!document.hidden && !isStreaming()) queueScan(650);
         return;
       }
-      if (isStreaming()) {
-        lastState = 'Paused while ChatGPT is generating';
-        return;
-      }
-      if (performance.now() - lastScroll < 250 || performance.now() - lastTyping < 300) {
-        lastState = 'Paused during interaction';
-        queueScan(500);
-        return;
-      }
-      if (turns.length < settings.minimumTurns || showAllUntilRouteChange) {
+      if (turns.length < settings.minimumTurns && !(settings.largeBlocks && supportsCV) || showAllUntilRouteChange) {
         cleanupMarks();
         lastState = showAllUntilRouteChange ? 'Full conversation restored' : 'Below optimization threshold';
         return;
       }
       const scroller = getScroller(turns[turns.length - 1]);
-      // Compacting while reading old history can make the page jump. Wait until
-      // the reader comes back down. Safe mode does not hide anything.
-      if (settings.mode === 'compact' && foldedCount === 0 && !nearBottom(scroller)) {
+      if (settings.mode === 'compact' && foldedCount === 0 && !nearBottom(scroller) &&
+          turns.length >= settings.minimumTurns) {
         lastState = 'Compact mode waits until near the bottom';
         return;
       }
-      const keep = Math.min(turns.length, settings.keepRecent + extraRecent);
-      const cutoff = turns.length - keep;
-      const current = new Set(turns);
-      const anchor = turns[cutoff] || turns[turns.length - 1];
-      const anchorTop = anchor?.getBoundingClientRect().top;
-      const atBottom = nearBottom(scroller);
-      const bottomDistance = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
-      let folded = 0;
-      for (let i = 0; i < turns.length; i++) {
-        const node = turns[i];
-        const keepVisible = i >= cutoff || protectedTurn(node) || independentlyOpened.has(node);
-        const desired = keepVisible ? 'none' :
-          (settings.mode === 'compact' ? 'fold' : (supportsCV ? 'auto' : 'none'));
-        const already = desired === 'fold' ? node.classList.contains(`${TAG}-folded`) :
-          desired === 'auto' ? node.classList.contains(`${TAG}-auto`) :
-          (!node.classList.contains(`${TAG}-auto`) && !node.classList.contains(`${TAG}-folded`));
-        if (!already) mark(node, desired, `Older turn ${i + 1} — click to expand`);
-        if (desired === 'fold') folded++;
-      }
-      for (const node of [...managed]) {
-        if (!node.isConnected || !current.has(node)) mark(node, 'none');
-      }
-      foldedCount = folded;
-      // Preserve scroll only after the browser has applied layout changes.
-      if (settings.mode === 'compact' && folded && scroller.isConnected) {
-        requestAnimationFrame(() => {
-          if (!anchor?.isConnected || isStreaming()) return;
-          if (atBottom) {
-            scroller.scrollTop = Math.max(0, scroller.scrollHeight - scroller.clientHeight - bottomDistance);
-          } else if (Number.isFinite(anchorTop)) {
-            scroller.scrollTop += anchor.getBoundingClientRect().top - anchorTop;
-          }
-        });
-      }
-      lastState = settings.mode === 'compact' ? `Compact: ${folded} older turns folded` :
-        supportsCV ? `Safe: ${cutoff} older turns optimized` : 'content-visibility unsupported';
+      const cutoff = turns.length >= settings.minimumTurns
+        ? Math.max(0, turns.length - Math.min(turns.length, settings.keepRecent + extraRecent))
+        : 0;
+      scanJob = {
+        id: ++jobSerial, route: nextRoute, root, layout, turns,
+        turnSet: new Set(turns), mode: settings.mode, cutoff,
+        index: 0, folded: 0, blockQueue: [], blockIndex: 0,
+        blockSeen: new Set(), workMs: 0, scroller, started: t0
+      };
+      // The work is sliced into <=6ms / <=24-operation chunks.
+      runChunk(scanJob);
     } catch (error) {
-      // Fail open. Never leave the conversation partially transformed on error.
+      cancelJob();
       cleanupMarks();
       lastState = `Safety fallback (${error?.message || 'DOM changed'})`;
-      console.warn('[ChatGPT Smoother] Restored original page after error', error);
+      console.warn('[ChatGPT Smoother] Restored page after error', error);
     } finally {
-      scanning = false;
-      lastScanMs = Math.round((performance.now() - t0) * 10) / 10;
       applyMotion();
       render();
     }
+  }
+
+  function captureCurrentScroll() {
+    const { turns } = discover();
+    if (!turns.length) return null;
+    return captureScroll({
+      mode: 'compact', turns, scroller: getScroller(turns[turns.length - 1]),
+      route: location.pathname + location.search
+    });
   }
 
   function revealOlder(step = 20) {
@@ -362,8 +582,11 @@
     queueScan(0);
   }
   function restoreAll() {
+    cancelJob();
+    const snapshot = captureCurrentScroll();
     showAllUntilRouteChange = true;
     cleanupMarks();
+    if (snapshot) requestAnimationFrame(() => restoreScroll(snapshot));
     lastState = 'Full conversation restored for this conversation';
     render();
   }
@@ -375,7 +598,11 @@
     extraRecent = 0;
     showAllUntilRouteChange = false;
     save();
-    if (!settings.enabled) cleanupMarks();
+    if (!settings.enabled || !settings.largeBlocks) {
+      if (!settings.enabled) cleanupMarks();
+      else { for (const node of largeManaged) node.classList.remove(`${TAG}-block`); largeManaged.clear(); }
+    }
+    updateLongTaskObserver();
     queueScan(0);
     render();
   }
@@ -411,7 +638,7 @@
       .actions button { border:1px solid #64748b; padding:6px 9px; border-radius:6px;
         cursor:pointer; color:#fff; background:#374151; }
       button:focus-visible,input:focus-visible,select:focus-visible { outline:2px solid #93c5fd; outline-offset:2px; }
-      .metrics { margin-top:10px; color:#bbc8d8; font-size:11px; }
+      .metrics { margin-top:10px; color:#bbc8d8; font-size:11px; white-space:pre-line; line-height:1.65; }
       .warn { color:#fcd34d; font-size:11px; }
     `;
     shadow.appendChild(style);
@@ -424,6 +651,7 @@
         <label>Mode <select name="mode"><option value="safe">Safe — recommended</option><option value="compact">Compact — more aggressive</option></select></label>
         <label>Recent turns to keep <input name="keepRecent" type="number" min="10" max="200" step="10"></label>
         <label>Start optimizing at <input name="minimumTurns" type="number" min="20" max="500" step="10"></label>
+        <label>Optimize large reply blocks <input name="largeBlocks" type="checkbox"></label>
         <label>Reduce animations <input name="reduceMotion" type="checkbox"></label>
         <div class="status" id="status" role="status"></div>
         <div class="warn" id="warning"></div>
@@ -432,7 +660,8 @@
           <button type="button" data-action="all">Show all</button>
           <button type="button" data-action="reapply">Reapply</button>
         </div>
-        <div class="metrics" id="metrics"></div>
+        <div class="metrics" id="metrics" aria-live="off"></div>
+        <p class="description">Timing measurements describe this page, not AI inference speed. Long tasks are page-wide.</p>
       </div>
       <button type="button" class="launcher" id="launcher" aria-expanded="false" aria-controls="settings-panel">Smoother</button>
     `;
@@ -456,6 +685,7 @@
       if (button.id === 'launcher' || action === 'close') {
         settings.panelOpen = button.id === 'launcher' ? !settings.panelOpen : false;
         save();
+        updateLongTaskObserver();
         render();
       } else if (action === 'older') revealOlder();
       else if (action === 'all') restoreAll();
@@ -485,14 +715,28 @@
       : settings.mode === 'compact'
         ? 'Compact mode visually hides older turns. Use “Show all” for search, copy, or export.'
         : 'Safe mode keeps older turns searchable and accessible.';
-    ui.metrics.textContent = `${latestCount} turns detected · ${foldedCount} folded · layout: ${currentLayout} · last scan: ${lastScanMs} ms`;
+    const total = Number.isFinite(perf.lastTotalMs) ? perf.lastTotalMs.toFixed(1) : '—';
+    const avg = perf.scans ? perf.meanTotalMs.toFixed(1) : '—';
+    const frame = perf.frameGapMs === null ? 'n/a' : `${perf.frameGapMs.toFixed(1)} ms`;
+    ui.metrics.textContent = `${latestCount} turns · ${foldedCount} folded · ${largeManaged.size} large blocks · ${currentLayout} layout\n` +
+      `Scans ${perf.scans} · last ${total} ms · avg ${avg} ms\n` +
+      `Last work ${perf.lastWorkMs.toFixed(1)} ms · chunk ${perf.lastChunkMs.toFixed(1)} ms · peak ${perf.maxChunkMs.toFixed(1)} ms\n` +
+      `Budget overruns ${perf.overBudget} · frame interval ${frame}\n` +
+      (perf.supportedLongTasks ? `Page long tasks ${perf.longTasks} · total ${perf.longTaskMs.toFixed(0)} ms` : 'Page long tasks unavailable in this browser');
   }
 
   function start() {
     if (document.getElementById(`${TAG}-host`)) return;
     injectCSS();
     makeUI();
-    document.addEventListener('scroll', () => { lastScroll = performance.now(); }, { capture: true, passive: true });
+    updateLongTaskObserver();
+    document.addEventListener('scroll', () => {
+      const now = performance.now();
+      if (now >= suppressScrollUntil) { lastScroll = now; userScrollEpoch++; }
+    }, { capture: true, passive: true });
+    for (const eventName of ['wheel', 'touchstart', 'pointerdown']) {
+      document.addEventListener(eventName, () => { userScrollEpoch++; }, { capture: true, passive: true });
+    }
     document.addEventListener('input', e => {
       const t = e.target;
       if (t instanceof Element && (t.closest('[contenteditable="true"]') || t.matches('textarea, input'))) {
@@ -505,8 +749,10 @@
       const folded = target.closest(`.${TAG}-folded`);
       if (!folded || !managed.has(folded)) return;
       // A collapsed wrapper is a visual summary; reveal its existing DOM in place.
+      const snapshot = captureCurrentScroll();
       independentlyOpened.add(folded);
       mark(folded, 'none');
+      if (snapshot) requestAnimationFrame(() => restoreScroll(snapshot));
       foldedCount = Math.max(0, foldedCount - 1);
       queueScan(100);
       render();
@@ -514,6 +760,7 @@
     // Avoid monkey-patching history.pushState and ChatGPT's React runtime.
     // A low-frequency route check is cheap and catches SPA navigation.
     setInterval(() => {
+      if (document.hidden) return;
       const nextRoute = location.pathname + location.search;
       const streaming = isStreaming();
       // Recheck only on navigation, replaced roots or streaming transitions,
@@ -525,7 +772,14 @@
       if (ui && !host?.isConnected) makeUI();
     }, 2400);
     window.addEventListener('popstate', () => queueScan(100));
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) queueScan(250); });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) suspendBackground();
+      else {
+        blockedByVisibility = false;
+        updateLongTaskObserver();
+        queueScan(250);
+      }
+    });
     queueScan(600);
   }
 
