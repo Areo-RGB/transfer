@@ -1,40 +1,46 @@
-# ChatGPT Long Chat Smoother — Tampermonkey
+# ChatGPT Long Chat Smoother v1.1.0 — Tampermonkey
 
-A *safe-first* userscript for long ChatGPT conversations. Intended for Firefox Developer Edition and Chrome.
-
-## Direct install
-
-[**Install userscript (raw .user.js)**](https://raw.githubusercontent.com/Areo-RGB/transfer/main/ChatGPT-Long-Chat-Smoother.user.js)
-
-[View userscript source](ChatGPT-Long-Chat-Smoother.user.js)
+A privacy-conscious userscript for reducing **browser-side** lag in long ChatGPT conversations. Designed for Firefox Developer Edition and Chrome. It does **not** speed up OpenAI's servers.
 
 ## Install
 
 1. Install [Tampermonkey for Firefox](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/) or [Tampermonkey for Chrome](https://chromewebstore.google.com/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo).
-2. Tampermonkey dashboard → **Create a new script**.
-3. Replace the example script with the contents of `ChatGPT-Long-Chat-Smoother.user.js` and save.
-4. Disable other ChatGPT performance optimizers temporarily to avoid conflicts.
-5. Reload ChatGPT and click **Smoother** in the bottom-right corner.
+2. Open the **[direct userscript link](https://raw.githubusercontent.com/Areo-RGB/transfer/main/ChatGPT-Long-Chat-Smoother.user.js)**. Tampermonkey should offer to install it. If not, open **Tampermonkey → Create a new script**, paste the code, and save.
+3. Disable any other ChatGPT DOM/performance optimizers temporarily while testing.
+4. Reload ChatGPT and click **Smoother** (bottom right) to configure it.
+
+## What v1.1 adds
+
+- **Time-budgeted work**: no more than 24 DOM operations per chunk, targeting a 6 ms JavaScript budget; exceptions are rolled back to the original page. DOM discovery and emergency rollback still have synchronous costs; the budget is a target, not a hard browser guarantee.
+- **Background-tab suspension**: stops queued work, disconnects the root observer, and pauses dashboard diagnostics when the tab is hidden; restarts after returning.
+- **Performance dashboard**: per-scan timing, total active JavaScript time, last/peak chunk duration, budget overruns, two-frame interval sample, and page-wide Long Tasks where supported (primarily Chromium). The frame interval is **not** exact paint latency, and Long Tasks cannot be attributed to this script alone.
+- **Large-reply hints**: optional `content-visibility:auto` for lengthy `pre`, `table`, and Markdown paragraph/blockquote elements on the *legacy* layout. The feature uses text **lengths**, never stores conversation text. It skips the last two turns, selections, focused content, and streaming.
+- **Scroll anchoring**: preserves the visible on-screen turn or distance from the bottom between compact-mode batches, including **Show all** and clicking an older folded turn. User scrolling takes precedence over scripted restoration.
 
 ## Modes
 
-- **Safe (default):** uses `content-visibility:auto` for older turns in the legacy ChatGPT UI. Preserves the DOM and normal find-in-page behavior.
-- **Compact (opt-in):** folds older legacy turns into clickable rows. Click one to expand; choose **Reveal 20 older** or **Show all** to restore old content. Browser text search and copy of folded content require revealing it first.
-- **Newer native-virtualized UI:** detects `[data-thread-find-target="conversation"]` with `[data-turn-key]` and leaves ChatGPT's own virtualization untouched. The script may therefore make no difference on newer layouts.
+- **Safe (default)** — uses `content-visibility:auto` on older turns in the legacy interface. Leaves the content DOM intact and usually preserves in-page search. This is a rendering optimization, **not** strong memory reclamation.
+- **Compact (opt-in)** — hides old turns using CSS only. Click any folded row, **Reveal 20 older**, or **Show all** to restore content. Searching/copying hidden text requires revealing it first. Use only if Safe is insufficient.
+- **Newer native-virtualized interface** — leaves ChatGPT's own virtualization untouched, including large-block hints. This means **no performance gain** on many newer ChatGPT layouts, by design.
 
-## Defaults
+## Settings and privacy
 
-- Keep latest **30 turns** unmodified.
-- Activate at **50 detected turns**.
-- Pause during generation, active scrolling and typing.
-- **No permissions beyond the chatgpt.com page**, no external requests, no conversation text storage, no network interception.
+Defaults: enabled, Safe mode, keep 30 newest turns unmodified, whole-turn optimization threshold of 50 turns, large-block hints on for legacy layout, reduced animation off. Large-block hints may apply even in shorter chats containing a very large reply.
 
-## Emergency restore
+- No external requests, credential access, API interception, React/Fiber access, or storage of conversation content.
+- `localStorage` stores only preference toggles and numbers.
+- Work pauses during generation, typing, and recent scrolling. Hidden tabs are suspended.
+- The dashboard records page-local aggregate timings only; no telemetry leaves the browser.
 
-In the Smoother panel, click **Show all** or turn **Enabled** off. Disabling the script in Tampermonkey and reloading ChatGPT restores the page fully.
+## Compatibility and limitations
 
-## Limitations
+- Tested with Node syntax checking and isolated simulated DOM cases (Safe/Compact/modern/streaming/hidden/reveal/disable/large blocks/failure recovery). **Not tested in a live signed-in ChatGPT browser session.**
+- The selectors for ChatGPT's page structure are undocumented and may change.
+- `content-visibility` can sometimes affect in-page find, accessibility, layout, and scrolling; disable **Optimize large reply blocks** if you notice artifacts.
+- The newer ChatGPT interface may already optimize large conversations better than these legacy techniques.
 
-This is frontend optimization only. It cannot make AI inference faster. Safe mode is mostly a rendering optimization, not a large RAM reduction. Compact mode may alter scrolling and should be tested on noncritical long chats first. The script was syntax-checked and tested against synthetic layouts, but not on a live signed-in ChatGPT session.
+## Recover original page
 
-See `ChatGPT-Smoother-Analysis.md` for the comparison of six archived userscript projects and validation notes.
+Click **Smoother → Show all**, or turn **Enabled** off. If ChatGPT behaves strangely, disable the userscript in Tampermonkey and reload the tab.
+
+See [ChatGPT-Smoother-Analysis.md](ChatGPT-Smoother-Analysis.md) for the original comparative analysis. Source license: MIT.
