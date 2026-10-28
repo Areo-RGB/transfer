@@ -1,0 +1,191 @@
+# Libadwaita API Reference
+
+> Official GTK 4/libadwaita API documentation, version 1.9.3, including widget classes, interfaces, functions, enums, and developer guides.
+
+Source: https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/
+Full documentation: https://github.com/Areo-RGB/transfer/blob/main/libadwaita/llms-full.txt
+
+## Guides and overview
+
+- [Adw – 1](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/): API reference documentation.
+- [Adw – 1: Adaptive Layouts](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/adaptive-layouts.html): Libadwaita provides a number of widgets that change their layout based on the available space.
+- [Adw – 1: Boxed Lists](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/boxed-lists.html): Libadwaita provides API to implement the boxed lists pattern.
+- [Adw – 1: Compiling with Libadwaita](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/build-howto.html): If you need to build Libadwaita, get the source from here and see the README.md file.
+- [Adw – 1: Classes Hierarchy](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/classes_hierarchy.html): API reference documentation.
+- [Adw – 1: CSS Variables](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/css-variables.html): The Adwaita stylesheet provides a number of predefined CSS variables for colors that can be used from applications.
+- [Adw – 1: Initialization](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/initialization.html): Before using Libadwaita, it must be initialized. There are two ways of doing this.
+- [Adw – 1: Migrating from Libhandy 1.4 to Libadwaita](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/migrating-libhandy-1-4-to-libadwaita.html): Libadwaita is being developed as a successor to Libhandy 1.4. As such, it offers to GTK 4 many features Libhandy was offering to GTK 3.
+- [Adw – 1: Migrating to Adaptive Dialogs](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/migrating-to-adaptive-dialogs.html): Libadwaita 1.5 introduces AdwDialog and replacements for AdwMessageDialog, AdwPreferencesWindow and AdwAboutWindow that derive from it.
+- [Adw – 1: Migrating to Breakpoints](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/migrating-to-breakpoints.html): Libadwaita 1.4 introduces AdwBreakpoint and new adaptive widgets that can integrate with it, while deprecating the old widgets.
+- [Adw – 1: Style Classes](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/style-classes.html): The Adwaita stylesheet provides a number of style classes. They can be applied to widgets to change their appearance.
+- [Adw – 1: Styles & Appearance](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/styles-and-appearance.html): Libadwaita applications can use a light or a dark appearance. This can be used to request a darker UI, or to support a system-wide dark style preference if one exists.
+- [Adw – 1: Widget Gallery](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/widget-gallery.html): See also: AdwClampLayout, AdwClampScrollable
+
+## Classes
+
+- [Adw.AboutDialog](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.AboutDialog.html): final class Adw.AboutDialog : Adw.Dialog implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.ShortcutManager { / No available fields / }
+- [Adw.AboutWindow](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.AboutWindow.html): final class Adw.AboutWindow : Adw.Window implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Native, Gtk.Root, Gtk.ShortcutManager {…
+- [Adw.ActionRow](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ActionRow.html): class Adw.ActionRow : Adw.PreferencesRow implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.AlertDialog](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.AlertDialog.html): class Adw.AlertDialog : Adw.Dialog implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.ShortcutManager { / No available fields / }
+- [Adw.Animation](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Animation.html): abstract class Adw.Animation : GObject.Object { / No available fields / }
+- [Adw.AnimationTarget](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.AnimationTarget.html): abstract class Adw.AnimationTarget : GObject.Object { / No available fields / }
+- [Adw.Application](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Application.html): class Adw.Application : Gtk.Application implements Gio.ActionGroup, Gio.ActionMap { / No available fields / }
+- [Adw.ApplicationWindow](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ApplicationWindow.html): class Adw.ApplicationWindow : Gtk.ApplicationWindow implements Gio.ActionGroup, Gio.ActionMap, Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget,…
+- [Adw.Avatar](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Avatar.html): final class Adw.Avatar : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.Banner](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Banner.html): final class Adw.Banner : Gtk.Widget implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.Bin](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Bin.html): class Adw.Bin : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.BottomSheet](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.BottomSheet.html): final class Adw.BottomSheet : Gtk.Widget implements Adw.Swipeable, Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.Breakpoint](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Breakpoint.html): final class Adw.Breakpoint : GObject.Object implements Gtk.Buildable { / No available fields / }
+- [Adw.BreakpointBin](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.BreakpointBin.html): class Adw.BreakpointBin : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.ButtonContent](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ButtonContent.html): final class Adw.ButtonContent : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.ButtonRow](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ButtonRow.html): final class Adw.ButtonRow : Adw.PreferencesRow implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.CallbackAnimationTarget](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.CallbackAnimationTarget.html): final class Adw.CallbackAnimationTarget : Adw.AnimationTarget { / No available fields / }
+- [Adw.Carousel](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Carousel.html): final class Adw.Carousel : Gtk.Widget implements Adw.Swipeable, Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Orientable { / No available fields / }
+- [Adw.CarouselIndicatorDots](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.CarouselIndicatorDots.html): final class Adw.CarouselIndicatorDots : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Orientable { / No available fields / }
+- [Adw.CarouselIndicatorLines](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.CarouselIndicatorLines.html): final class Adw.CarouselIndicatorLines : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Orientable { / No available fields / }
+- [Adw.Clamp](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Clamp.html): final class Adw.Clamp : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Orientable { / No available fields / }
+- [Adw.ClampLayout](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ClampLayout.html): final class Adw.ClampLayout : Gtk.LayoutManager implements Gtk.Orientable { / No available fields / }
+- [Adw.ClampScrollable](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ClampScrollable.html): final class Adw.ClampScrollable : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Orientable, Gtk.Scrollable { / No available fields / }
+- [Adw.ComboRow](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ComboRow.html): class Adw.ComboRow : Adw.ActionRow implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.CssClassBinding](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.CssClassBinding.html): final class Adw.CssClassBinding : GObject.Object { / No available fields / }
+- [Adw.Dialog](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Dialog.html): class Adw.Dialog : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.ShortcutManager { / No available fields / }
+- [Adw.EntryRow](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.EntryRow.html): class Adw.EntryRow : Adw.PreferencesRow implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Editable { / No available fields / }
+- [Adw.EnumListItem](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.EnumListItem.html): final class Adw.EnumListItem : GObject.Object { / No available fields / }
+- [Adw.EnumListModel](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.EnumListModel.html): final class Adw.EnumListModel : GObject.Object implements Gio.ListModel { / No available fields / }
+- [Adw.ExpanderRow](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ExpanderRow.html): class Adw.ExpanderRow : Adw.PreferencesRow implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.Flap](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Flap.html): final class Adw.Flap : Gtk.Widget implements Adw.Swipeable, Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Orientable { / No available fields / }
+- [Adw.HeaderBar](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.HeaderBar.html): final class Adw.HeaderBar : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.InlineViewSwitcher](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.InlineViewSwitcher.html): final class Adw.InlineViewSwitcher : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Orientable { / No available fields / }
+- [Adw.Layout](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Layout.html): final class Adw.Layout : GObject.Object implements Gtk.Buildable { / No available fields / }
+- [Adw.LayoutSlot](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.LayoutSlot.html): final class Adw.LayoutSlot : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.Leaflet](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Leaflet.html): final class Adw.Leaflet : Gtk.Widget implements Adw.Swipeable, Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Orientable { / No available fields / }
+- [Adw.LeafletPage](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.LeafletPage.html): final class Adw.LeafletPage : GObject.Object { / No available fields / }
+- [Adw.MessageDialog](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.MessageDialog.html): class Adw.MessageDialog : Gtk.Window implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Native, Gtk.Root, Gtk.ShortcutManager { / No available fields / }
+- [Adw.MultiLayoutView](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.MultiLayoutView.html): final class Adw.MultiLayoutView : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.NavigationPage](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.NavigationPage.html): class Adw.NavigationPage : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.NavigationSplitView](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.NavigationSplitView.html): final class Adw.NavigationSplitView : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.NavigationView](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.NavigationView.html): final class Adw.NavigationView : Gtk.Widget implements Adw.Swipeable, Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.NoneAnimationTarget](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.NoneAnimationTarget.html): final class Adw.NoneAnimationTarget : Adw.AnimationTarget { / No available fields / }
+- [Adw.OverlaySplitView](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.OverlaySplitView.html): final class Adw.OverlaySplitView : Gtk.Widget implements Adw.Swipeable, Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.PasswordEntryRow](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.PasswordEntryRow.html): final class Adw.PasswordEntryRow : Adw.EntryRow implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Editable { / No available fields / }
+- [Adw.PreferencesDialog](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.PreferencesDialog.html): class Adw.PreferencesDialog : Adw.Dialog implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.ShortcutManager { / No available fields / }
+- [Adw.PreferencesGroup](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.PreferencesGroup.html): class Adw.PreferencesGroup : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.PreferencesPage](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.PreferencesPage.html): class Adw.PreferencesPage : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.PreferencesRow](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.PreferencesRow.html): class Adw.PreferencesRow : Gtk.ListBoxRow implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.PreferencesWindow](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.PreferencesWindow.html): class Adw.PreferencesWindow : Adw.Window implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Native, Gtk.Root, Gtk.ShortcutManager {…
+- [Adw.PropertyAnimationTarget](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.PropertyAnimationTarget.html): final class Adw.PropertyAnimationTarget : Adw.AnimationTarget { / No available fields / }
+- [Adw.ShortcutLabel](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ShortcutLabel.html): final class Adw.ShortcutLabel : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.ShortcutsDialog](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ShortcutsDialog.html): final class Adw.ShortcutsDialog : Adw.Dialog implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.ShortcutManager { / No available fields / }
+- [Adw.ShortcutsItem](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ShortcutsItem.html): final class Adw.ShortcutsItem : GObject.Object { / No available fields / }
+- [Adw.ShortcutsSection](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ShortcutsSection.html): final class Adw.ShortcutsSection : GObject.Object implements Gio.ListModel, Gtk.Buildable { / No available fields / }
+- [Adw.Sidebar](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Sidebar.html): final class Adw.Sidebar : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.SidebarItem](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.SidebarItem.html): class Adw.SidebarItem : GObject.Object { / No available fields / }
+- [Adw.SidebarSection](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.SidebarSection.html): final class Adw.SidebarSection : GObject.Object implements Gtk.Buildable { / No available fields / }
+- [Adw.Spinner](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Spinner.html): final class Adw.Spinner : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.SpinnerPaintable](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.SpinnerPaintable.html): final class Adw.SpinnerPaintable : GObject.Object implements Gdk.Paintable, Gtk.SymbolicPaintable { / No available fields / }
+- [Adw.SpinRow](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.SpinRow.html): final class Adw.SpinRow : Adw.ActionRow implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Editable { / No available fields / }
+- [Adw.SplitButton](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.SplitButton.html): final class Adw.SplitButton : Gtk.Widget implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.SpringAnimation](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.SpringAnimation.html): final class Adw.SpringAnimation : Adw.Animation { / No available fields / }
+- [Adw.Squeezer](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Squeezer.html): final class Adw.Squeezer : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Orientable { / No available fields / }
+- [Adw.SqueezerPage](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.SqueezerPage.html): final class Adw.SqueezerPage : GObject.Object { / No available fields / }
+- [Adw.StatusPage](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.StatusPage.html): final class Adw.StatusPage : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.StyleManager](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.StyleManager.html): final class Adw.StyleManager : GObject.Object { / No available fields / }
+- [Adw.SwipeTracker](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.SwipeTracker.html): final class Adw.SwipeTracker : GObject.Object implements Gtk.Orientable { / No available fields / }
+- [Adw.SwitchRow](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.SwitchRow.html): final class Adw.SwitchRow : Adw.ActionRow implements Gtk.Accessible, Gtk.Actionable, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.TabBar](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.TabBar.html): final class Adw.TabBar : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.TabButton](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.TabButton.html): AdwTabButton uses the GTKACCESSIBLEROLEBUTTON role.
+- [Adw.TabOverview](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.TabOverview.html): final class Adw.TabOverview : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.TabPage](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.TabPage.html): final class Adw.TabPage : GObject.Object implements Gtk.Accessible { / No available fields / }
+- [Adw.TabView](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.TabView.html): final class Adw.TabView : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.TimedAnimation](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.TimedAnimation.html): final class Adw.TimedAnimation : Adw.Animation { / No available fields / }
+- [Adw.Toast](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Toast.html): final class Adw.Toast : GObject.Object { / No available fields / }
+- [Adw.ToastOverlay](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ToastOverlay.html): final class Adw.ToastOverlay : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.Toggle](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Toggle.html): final class Adw.Toggle : GObject.Object { / No available fields / }
+- [Adw.ToggleGroup](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ToggleGroup.html): final class Adw.ToggleGroup : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Orientable { / No available fields / }
+- [Adw.ToolbarView](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ToolbarView.html): final class Adw.ToolbarView : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.ViewStack](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ViewStack.html): final class Adw.ViewStack : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.ViewStackPage](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ViewStackPage.html): final class Adw.ViewStackPage : GObject.Object implements Gtk.Accessible { / No available fields / }
+- [Adw.ViewStackPages](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ViewStackPages.html): final class Adw.ViewStackPages : GObject.Object implements Gio.ListModel, Gtk.SectionModel, Gtk.SelectionModel { / No available fields / }
+- [Adw.ViewSwitcher](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ViewSwitcher.html): final class Adw.ViewSwitcher : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.ViewSwitcherBar](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ViewSwitcherBar.html): final class Adw.ViewSwitcherBar : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.ViewSwitcherSidebar](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ViewSwitcherSidebar.html): final class Adw.ViewSwitcherSidebar : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.ViewSwitcherTitle](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.ViewSwitcherTitle.html): final class Adw.ViewSwitcherTitle : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.Window](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.Window.html): class Adw.Window : Gtk.Window implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Native, Gtk.Root, Gtk.ShortcutManager { / No available fields / }
+- [Adw.WindowTitle](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.WindowTitle.html): final class Adw.WindowTitle : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget { / No available fields / }
+- [Adw.WrapBox](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.WrapBox.html): final class Adw.WrapBox : Gtk.Widget implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget, Gtk.Orientable { / No available fields / }
+- [Adw.WrapLayout](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/class.WrapLayout.html): final class Adw.WrapLayout : Gtk.LayoutManager implements Gtk.Orientable { / No available fields / }
+
+## Interfaces
+
+- [Adw.Swipeable](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/iface.Swipeable.html): interface Adw.Swipeable : Gtk.Widget
+
+## Structs
+
+- [Adw.BreakpointCondition](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/struct.BreakpointCondition.html): struct AdwBreakpointCondition { / No available fields / }
+- [Adw.SpringParams](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/struct.SpringParams.html): struct AdwSpringParams { / No available fields / }
+
+## Enumerations
+
+- [Adw.AccentColor](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.AccentColor.html): Describes the available system accent colors.
+- [Adw.AnimationState](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.AnimationState.html): Describes the possible states of an AdwAnimation.
+- [Adw.BannerButtonStyle](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.BannerButtonStyle.html): Describes the available button styles for AdwBanner.
+- [Adw.BreakpointConditionLengthType](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.BreakpointConditionLengthType.html): enum Adw.BreakpointConditionLengthType
+- [Adw.BreakpointConditionRatioType](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.BreakpointConditionRatioType.html): enum Adw.BreakpointConditionRatioType
+- [Adw.CenteringPolicy](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.CenteringPolicy.html): Describes title centering behavior of a AdwHeaderBar widget.
+- [Adw.ColorScheme](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.ColorScheme.html): Application color schemes for AdwStyleManager:color-scheme.
+- [Adw.DialogPresentationMode](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.DialogPresentationMode.html): Describes the available presentation modes for AdwDialog.
+- [Adw.Easing](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.Easing.html): Describes the available easing functions for use with AdwTimedAnimation.
+- [Adw.FlapFoldPolicy](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.FlapFoldPolicy.html): See the migration guide.
+- [Adw.FlapTransitionType](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.FlapTransitionType.html): See the migration guide.
+- [Adw.FoldThresholdPolicy](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.FoldThresholdPolicy.html): Determines when AdwFlap and AdwLeaflet will fold.
+- [Adw.InlineViewSwitcherDisplayMode](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.InlineViewSwitcherDisplayMode.html): enum Adw.InlineViewSwitcherDisplayMode
+- [Adw.JustifyMode](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.JustifyMode.html): Describes line justify behaviors in a AdwWrapLayout or AdwWrapBox.
+- [Adw.LeafletTransitionType](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.LeafletTransitionType.html): See the migration guide.
+- [Adw.LengthUnit](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.LengthUnit.html): New values may be added to this enumeration over time.
+- [Adw.NavigationDirection](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.NavigationDirection.html): Describes the direction of a swipe navigation gesture.
+- [Adw.PackDirection](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.PackDirection.html): Describes child packing behavior in a AdwWrapLayout or AdwWrapBox.
+- [Adw.ResponseAppearance](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.ResponseAppearance.html): Describes the possible styles of AdwAlertDialog response buttons.
+- [Adw.SidebarMode](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.SidebarMode.html): Determines how an AdwSidebar should look and behave.
+- [Adw.SqueezerTransitionType](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.SqueezerTransitionType.html): See the migration guide.
+- [Adw.ToastPriority](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.ToastPriority.html): The toast will be queued if another toast is already displayed.
+- [Adw.ToolbarStyle](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.ToolbarStyle.html): Describes the possible top or bottom bar styles in an AdwToolbarView widget.
+- [Adw.ViewSwitcherPolicy](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.ViewSwitcherPolicy.html): Describes the adaptive modes of AdwViewSwitcher.
+- [Adw.WrapPolicy](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/enum.WrapPolicy.html): Describes line wrapping behavior in a AdwWrapLayout or AdwWrapBox.
+
+## Bitfields
+
+- [Adw.TabViewShortcuts](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/flags.TabViewShortcuts.html): Describes available shortcuts in an AdwTabView.
+
+## Callbacks
+
+- [Adw.AnimationTargetFunc](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/callback.AnimationTargetFunc.html): void ( AdwAnimationTargetFunc) ( double value, gpointer userdata )
+- [Adw.CssClassBindingMapToClassFunc](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/callback.CssClassBindingMapToClassFunc.html): gboolean ( AdwCssClassBindingMapToClassFunc) ( AdwCssClassBinding self, const GValue propertyvalue, gpointer userdata )
+- [Adw.CssClassBindingMapToPropertyFunc](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/callback.CssClassBindingMapToPropertyFunc.html): void ( AdwCssClassBindingMapToPropertyFunc) ( AdwCssClassBinding self, gboolean classapplied, GValue propertyvalue, gpointer userdata )
+- [Adw.SidebarSectionCreateItemFunc](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/callback.SidebarSectionCreateItemFunc.html): AdwSidebarItem ( AdwSidebarSectionCreateItemFunc) ( GObject item, gpointer userdata )
+
+## Functions
+
+- [Adw.bind_property_to_css_class_full](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.bind_property_to_css_class_full.html): AdwCssClassBinding adwbindpropertytocssclassfull ( GObject source, const char sourceproperty, GtkWidget target, const char targetcssclass,…
+- [Adw.bind_property_to_css_class_with_closures](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.bind_property_to_css_class_with_closures.html): AdwCssClassBinding adwbindpropertytocssclasswithclosures ( GObject source, const char sourceproperty, GtkWidget target, const char targetcssclass,…
+- [Adw.bind_property_to_css_class](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.bind_property_to_css_class.html): AdwCssClassBinding adwbindpropertytocssclass ( GObject source, const char sourceproperty, GtkWidget target, const char targetcssclass, GBindingFlags flags )
+- [Adw.CHECK_VERSION](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.CHECK_VERSION.html): #define ADWCHECKVERSION ( major, minor, micro )
+- [Adw.get_enable_animations](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.get_enable_animations.html): gboolean adwgetenableanimations ( GtkWidget widget )
+- [Adw.get_major_version](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.get_major_version.html): guint adwgetmajorversion ( void )
+- [Adw.get_micro_version](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.get_micro_version.html): guint adwgetmicroversion ( void )
+- [Adw.get_minor_version](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.get_minor_version.html): guint adwgetminorversion ( void )
+- [Adw.init](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.init.html): This function can be used instead of gtkinit() as it initializes GTK implicitly.
+- [Adw.is_initialized](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.is_initialized.html): gboolean adwisinitialized ( void )
+- [Adw.lerp](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.lerp.html): double adwlerp ( double a, double b, double t )
+- [Adw.rgba_to_standalone](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.rgba_to_standalone.html): void adwrgbatostandalone ( const GdkRGBA rgba, gboolean dark, GdkRGBA standalonergba )
+- [Adw.show_about_dialog_from_appdata](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.show_about_dialog_from_appdata.html): void adwshowaboutdialogfromappdata ( GtkWidget parent, const char resourcepath, const char releasenotesversion, const char firstpropertyname, ... )
+- [Adw.show_about_dialog](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.show_about_dialog.html): void adwshowaboutdialog ( GtkWidget parent, const char firstpropertyname, ... )
+- [Adw.show_about_window_from_appdata](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.show_about_window_from_appdata.html): void adwshowaboutwindowfromappdata ( GtkWindow parent, const char resourcepath, const char releasenotesversion, const char firstpropertyname, ... )
+- [Adw.show_about_window](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/func.show_about_window.html): void adwshowaboutwindow ( GtkWindow parent, const char firstpropertyname, ... )
+
+## Constants
+
+- [Adw.DURATION_INFINITE](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/const.DURATION_INFINITE.html): #define ADWDURATIONINFINITE 4294967295
+- [Adw.MAJOR_VERSION](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/const.MAJOR_VERSION.html): Adwaita major version component (e.g. 1 if the version is 1.2.3).
+- [Adw.MICRO_VERSION](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/const.MICRO_VERSION.html): Adwaita micro version component (e.g. 3 if the version is 1.2.3).
+- [Adw.MINOR_VERSION](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/const.MINOR_VERSION.html): Adwaita minor version component (e.g. 2 if the version is 1.2.3).
+- [Adw.VERSION_S](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/const.VERSION_S.html): Adwaita version, encoded as a string, useful for printing and concatenation.
