@@ -1,0 +1,64 @@
+# GNOME Human Interface Guidelines
+
+> Official GNOME application design principles, UI guidelines, component patterns, and reference materials for GTK 4 and libadwaita apps.
+
+Source: https://developer.gnome.org/hig/
+Full reference: https://github.com/Areo-RGB/transfer/blob/main/gnome-hig/llms-full.txt
+
+## Pages
+
+- [GNOME Human Interface Guidelines](https://developer.gnome.org/hig/): The GNOME Human Interface Guidelines are the primary source of design documentation for those creating software with the GNOME development platform.
+- [Guidelines](https://developer.gnome.org/hig/guidelines.html): The guidelines section covers the standard conventions used in GNOME UX design. These are all generally applicable, and are relevant to all apps and design patterns.
+- [Accessibility](https://developer.gnome.org/hig/guidelines/accessibility.html): Accessibility guidelines are included throughout the HIG and, the pages on keyboard interaction, pointer interaction, and UI styling are especially relevant to this topic.
+- [Scaling & Adaptiveness](https://developer.gnome.org/hig/guidelines/adaptive.html): GNOME supports a variety of device types, including desktops, laptops, convertibles, and phones.
+- [App Icons](https://developer.gnome.org/hig/guidelines/app-icons.html): In addition to having a great name, every app also needs a great icon. This page provides guidance on how to create one.
+- [App Naming](https://developer.gnome.org/hig/guidelines/app-naming.html): App names are a vital and essential part of the user experience.
+- [Keyboard](https://developer.gnome.org/hig/guidelines/keyboard.html): Keyboard interaction covers a range of behaviors, from text entry and shortcuts, through to the keyboard being used as the sole input device.
+- [Navigation](https://developer.gnome.org/hig/guidelines/navigation.html): While some apps only need a single view in which to show their UI, most need to be broken down into a series of views or windows.
+- [Pointer & Touch](https://developer.gnome.org/hig/guidelines/pointer-touch.html): A pointing device is any input device that allows the manipulation of a pointer — typically represented as an arrow, and often called a cursor — on screen.
+- [Typography](https://developer.gnome.org/hig/guidelines/typography.html): Text is an important part of any user interface. Text size, positioning, and weight all contribute to the ability for text to convey information effectively,…
+- [UI Icons](https://developer.gnome.org/hig/guidelines/ui-icons.html): This page provides general guidance on UI icon usage: when to use them, which ones to use, how to find them, and how to create them.
+- [UI Styling](https://developer.gnome.org/hig/guidelines/ui-styling.html): The visual style used for UI in GNOME is called Adwaita.
+- [Writing Style](https://developer.gnome.org/hig/guidelines/writing-style.html): Text plays an important role in user interfaces. Above all, user interface text should be easy to understand and quick to read.
+- [Patterns](https://developer.gnome.org/hig/patterns.html): The GNOME design patterns represent the elements from which an overall design can be constructed. Some patterns are common to all apps, whereas others can be used selectively.
+- [Containers](https://developer.gnome.org/hig/patterns/containers.html): Containers are some of the main UI building blocks. They include the primary containers for other UI elements, like windows and header bars.
+- [Boxed Lists](https://developer.gnome.org/hig/patterns/containers/boxed-lists.html): Boxed lists are a common type of list that can contain both controls and information. Examples include app preferences or a short list of recent documents in a picker.
+- [Grid Views](https://developer.gnome.org/hig/patterns/containers/grid-views.html): Grid views present a grid of images. Examples include a document browser, with a grid of document thumbnails that can be opened, or a background chooser, with…
+- [Header Bars](https://developer.gnome.org/hig/patterns/containers/header-bars.html): Header bars are a standard element that span the top of windows. They allow windows to be dragged, are the site for window management features, and contain app controls.
+- [List & Column Views](https://developer.gnome.org/hig/patterns/containers/list-column-views.html): List views are an alternative to boxed lists, which are able to handle very large lists of content, as well as those with dynamic content.
+- [Popovers](https://developer.gnome.org/hig/patterns/containers/popovers.html): A popover is a type of container that is overlaid on top of a window and which can be opened and closed using a button, to which it is attached.
+- [Selection & Edit Modes](https://developer.gnome.org/hig/patterns/containers/selection-mode.html): Selection and edit modes operate in the context of a collection view - either a content grid or list, or a sidebar list - and provide a way to modify multiple content items.
+- [Utility Panes](https://developer.gnome.org/hig/patterns/containers/utility-panes.html): Utility panes are vertical panels which are shown on one side of a window. They have some similarities with sidebars, but play a different role and have a unique behavior.
+- [Windows](https://developer.gnome.org/hig/patterns/containers/windows.html): Windows are the main containers for app user interfaces.
+- [Controls](https://developer.gnome.org/hig/patterns/controls.html): Controls include the most basic interactive UI elements, such as buttons and switches.
+- [Buttons](https://developer.gnome.org/hig/patterns/controls/buttons.html): Buttons are one of the most common and basic user interface elements.
+- [Checkboxes](https://developer.gnome.org/hig/patterns/controls/checkboxes.html): Checkboxes allow users to control binary options or properties. In general, switches are preferred to checkboxes. However, in some situations a checkbox may be more suitable.
+- [Drop-Down Lists](https://developer.gnome.org/hig/patterns/controls/drop-downs.html): Drop-down lists are used to select an item from a mutually exclusive set of options.
+- [Menus](https://developer.gnome.org/hig/patterns/controls/menus.html): Menus are a common design pattern. In GNOME they typically appear as primary, secondary and context menus.
+- [Overlaid Controls](https://developer.gnome.org/hig/patterns/controls/overlaid.html): Controls are typically opaque and permanently visible. However, in some cases it is desirable to have semi-transparent controls which appear over window content.
+- [Radio Buttons](https://developer.gnome.org/hig/patterns/controls/radio-buttons.html): Radio buttons allow a selection to be made from a set of options.
+- [Sliders](https://developer.gnome.org/hig/patterns/controls/sliders.html): A slider allows quickly selecting a value from a range. Common uses include seeking through audio or video, changing a volume level, or setting values in image editors.
+- [Spin Buttons](https://developer.gnome.org/hig/patterns/controls/spin-buttons.html): A spin button is a text field that accepts a range of values, with buttons that allow the value to be increased or decreased by a fixed amount.
+- [Switches](https://developer.gnome.org/hig/patterns/controls/switches.html): Switches can be used for controlling features, settings or hardware that have a clear on/off logic.
+- [Text Fields](https://developer.gnome.org/hig/patterns/controls/text-fields.html): Text fields allow single line text entry and editing.
+- [Feedback](https://developer.gnome.org/hig/patterns/feedback.html): Feedback includes design patterns for showing information about events and status, as well as for prompting users for a response.
+- [Banners](https://developer.gnome.org/hig/patterns/feedback/banners.html): A banner is a strip along the top of a view, which contains a title and an optional button. They are used to communicate persistent states.
+- [Dialogs](https://developer.gnome.org/hig/patterns/feedback/dialogs.html): Dialog windows present options, choices or information to users, which they must respond to in order to continue. There are two types of dialog in GNOME: alert dialogs and action dialogs.
+- [Notifications](https://developer.gnome.org/hig/patterns/feedback/notifications.html): Notifications are used to inform users about events that are relevant to them. Examples include:
+- [Placeholder Pages](https://developer.gnome.org/hig/patterns/feedback/placeholders.html): Placeholder pages fill a view with an image, a heading, and an optional line of descriptive text.
+- [Progress Bars](https://developer.gnome.org/hig/patterns/feedback/progress-bars.html): Progress bars indicate progress on a task. Unlike spinners, they typically indicate the proportion of the task that has been completed.
+- [Spinners](https://developer.gnome.org/hig/patterns/feedback/spinners.html): Spinners indicate ongoing progress on an action or operation.
+- [Toasts](https://developer.gnome.org/hig/patterns/feedback/toasts.html): Toasts are popup banners that contain a label and sometimes a button. They are always transient and user dismissible.
+- [Tooltips](https://developer.gnome.org/hig/patterns/feedback/tooltips.html): Tooltips can be set for any UI element. They are primarily used to convey additional information about what controls (often icon buttons) do, but can also be…
+- [Navigation](https://developer.gnome.org/hig/patterns/nav.html): Combined with containers, the navigation design patterns create the structure of an app. See the navigation guidelines for more information.
+- [Browsing](https://developer.gnome.org/hig/patterns/nav/browsing.html): Browsing changes what is shown in a view. Users open views by clicking on content items or links, and can return to previous views using the back button.
+- [Search](https://developer.gnome.org/hig/patterns/nav/search.html): Search allows content items to be located by filtering available content.
+- [Sidebars](https://developer.gnome.org/hig/patterns/nav/sidebars.html): A sidebar is a vertical panel which contains a list of different locations. Clicking each location navigates to it.
+- [Tabs](https://developer.gnome.org/hig/patterns/nav/tabs.html): Tabs allow a window to contain a mutable set of content items, such as pages, documents or images. They are primarily used as part of editor or browser apps.
+- [View Switchers](https://developer.gnome.org/hig/patterns/nav/view-switchers.html): A view switcher is a control that allows switching between a small number of predefined views. For example, a music app could show different views for artists, albums and playlists.
+- [Design Principles](https://developer.gnome.org/hig/principles.html): The HIG and the GNOME platform are reflective of the GNOME design tradition and philosophy, which has been informed by the project’s collective experience…
+- [Reference](https://developer.gnome.org/hig/reference.html): Design reference materials.
+- [Backgrounds](https://developer.gnome.org/hig/reference/backgrounds.html): These guidelines are primarily intended for Linux distributions who are creating background wallpapers for GNOME.
+- [Standard Keyboard Shortcuts](https://developer.gnome.org/hig/reference/keyboard.html): When providing keyboard shortcuts, the following conventions should be adhered to, in order to ensure consistency between apps.
+- [Palette](https://developer.gnome.org/hig/reference/palette.html): The GNOME color palette is intended for use in app icons and illustrations. A reference table is provided below.
+- [Tools & Resources](https://developer.gnome.org/hig/resources.html): A collection of tools and resources are available for those designing for the GNOME platform.
